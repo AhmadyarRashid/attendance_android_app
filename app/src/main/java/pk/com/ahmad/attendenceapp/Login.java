@@ -80,13 +80,13 @@ public class Login extends AppCompatActivity {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if ((wifiNetwork != null && wifiNetwork.isConnected()) || (mobileNetwork != null && mobileNetwork.isConnected()) || (activeNetwork != null && activeNetwork.isConnected())) {
             Toast.makeText(getApplicationContext(), "Internet Connected Successfully", Toast.LENGTH_SHORT).show();
-            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 Toast.makeText(this, "GPS is Enabled in your devide", Toast.LENGTH_SHORT).show();
                 startLocationUpdates();
-            }else{
+            } else {
                 showGPSDisabledAlertToUser();
             }
-        }else {
+        } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(false);
             builder.setMessage("Check Internet Connection.");
@@ -108,29 +108,29 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Toast.makeText(this, "GPS is Enabled in your devide", Toast.LENGTH_SHORT).show();
             startLocationUpdates();
-        }else {
+        } else {
             Toast.makeText(getApplicationContext(), "Please turn on GPS ", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void showGPSDisabledAlertToUser(){
+    private void showGPSDisabledAlertToUser() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
                 .setCancelable(false)
                 .setPositiveButton("Goto Settings Page To Enable GPS",
-                        new DialogInterface.OnClickListener(){
-                            public void onClick(DialogInterface dialog, int id){
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
                                 Intent callGPSSettingIntent = new Intent(
                                         android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                                 startActivity(callGPSSettingIntent);
                             }
                         });
         alertDialogBuilder.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener(){
-                    public void onClick(DialogInterface dialog, int id){
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
                 });
@@ -208,93 +208,27 @@ public class Login extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Please enter password", Toast.LENGTH_SHORT).show();
         } else {
 
-            // first check in radius or not
-            StringRequest postRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/getAllLocations",
+            // now going to login
+            StringRequest loginRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/login",
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             // response
                             try {
-                                Boolean isFound = false;
                                 JSONObject json = new JSONObject(response);
                                 Log.d("Response", json.toString());
                                 Log.d("Response", String.valueOf(json.getBoolean("isSuccess")));
                                 if (json.getBoolean("isSuccess")) {
-                                    JSONArray storeList = json.getJSONArray("payload");
-                                    for (int i = 0; i < storeList.length(); i++) {
-                                        JSONObject store = (JSONObject) storeList.get(i);
-
-                                        float[] results = new float[1];
-                                        Location.distanceBetween(
-                                                lat,
-                                                lng,
-                                                Double.parseDouble(store.getString("leti")),
-                                                Double.parseDouble(store.getString("longi")),
-                                                results);
-                                        float distanceInMeters = results[0];
-                                        boolean isWithinRadius = distanceInMeters < Float.parseFloat(store.getString("radius"));
-                                        Log.d("Response", "hello check store wise----" + store.getString("store_name") + "---" + isWithinRadius);
-                                        if (isWithinRadius) {
-                                            Log.d("Response", "Now you can login");
-                                            isFound = true;
-
-                                            // now going to login
-                                            StringRequest loginRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/login",
-                                                    new Response.Listener<String>() {
-                                                        @Override
-                                                        public void onResponse(String response) {
-                                                            // response
-                                                            try {
-                                                                JSONObject json = new JSONObject(response);
-                                                                Log.d("Response", json.toString());
-                                                                Log.d("Response", String.valueOf(json.getBoolean("isSuccess")));
-                                                                if (json.getBoolean("isSuccess")) {
-                                                                    JSONArray payload = json.getJSONArray("payload");
-                                                                    JSONObject data = payload.getJSONObject(0);
-                                                                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                                                                    i.putExtra("user_id", data.get("id").toString());
-                                                                    startActivity(i);
-                                                                } else {
-                                                                    Toast.makeText(getApplicationContext(), "Your cell# or password is incorrect", Toast.LENGTH_SHORT).show();
-                                                                }
-                                                            } catch (JSONException e) {
-                                                                e.printStackTrace();
-                                                            }
-
-                                                        }
-                                                    },
-                                                    new Response.ErrorListener() {
-                                                        @Override
-                                                        public void onErrorResponse(VolleyError error) {
-                                                            // error
-                                                            Log.d("Error.Response", error.toString());
-                                                        }
-                                                    }
-                                            ) {
-                                                @Override
-                                                protected Map<String, String> getParams() {
-                                                    Map<String, String> params = new HashMap<String, String>();
-                                                    params.put("mobile_no", mobile_no.getText().toString());
-                                                    params.put("password", password.getText().toString());
-
-                                                    return params;
-                                                }
-                                            };
-                                            queue.add(loginRequest);
-
-
-                                        }
-                                    }
-
-                                    if(!isFound){
-                                        Toast.makeText(getApplicationContext(), "You are away from your designated location.", Toast.LENGTH_SHORT).show();
-                                    }
+                                    JSONArray payload = json.getJSONArray("payload");
+                                    JSONObject data = payload.getJSONObject(0);
+                                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                                    i.putExtra("user_id", data.get("id").toString());
+                                    startActivity(i);
                                 } else {
-
-                                    Toast.makeText(getApplicationContext(), "Network Issue", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getApplicationContext(), "Your cell# or password is incorrect", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), json.getString("message"), Toast.LENGTH_SHORT).show();
                                 }
                             } catch (JSONException e) {
-
                                 e.printStackTrace();
                             }
 
@@ -304,7 +238,6 @@ public class Login extends AppCompatActivity {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             // error
-                            isSuccess = false;
                             Log.d("Error.Response", error.toString());
                         }
                     }
@@ -312,10 +245,81 @@ public class Login extends AppCompatActivity {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
+                    params.put("mobile_no", mobile_no.getText().toString());
+                    params.put("password", password.getText().toString());
+                    params.put("lat", String.valueOf(lat));
+                    params.put("lng", String.valueOf(lng));
+
                     return params;
                 }
             };
-            queue.add(postRequest);
+            queue.add(loginRequest);
+
+
+//            // first check in radius or not
+//            StringRequest postRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/getAllLocations",
+//                    new Response.Listener<String>() {
+//                        @Override
+//                        public void onResponse(String response) {
+//                            // response
+//                            try {
+//                                Boolean isFound = false;
+//                                JSONObject json = new JSONObject(response);
+//                                Log.d("Response", json.toString());
+//                                Log.d("Response", String.valueOf(json.getBoolean("isSuccess")));
+//                                if (json.getBoolean("isSuccess")) {
+//                                    JSONArray storeList = json.getJSONArray("payload");
+//                                    for (int i = 0; i < storeList.length(); i++) {
+//                                        JSONObject store = (JSONObject) storeList.get(i);
+//
+//                                        float[] results = new float[1];
+//                                        Location.distanceBetween(
+//                                                lat,
+//                                                lng,
+//                                                Double.parseDouble(store.getString("leti")),
+//                                                Double.parseDouble(store.getString("longi")),
+//                                                results);
+//                                        float distanceInMeters = results[0];
+//                                        boolean isWithinRadius = distanceInMeters < Float.parseFloat(store.getString("radius"));
+//                                        Log.d("Response", "hello check store wise----" + store.getString("store_name") + "---" + isWithinRadius);
+//                                        if (isWithinRadius) {
+//                                            Log.d("Response", "Now you can login");
+//                                            isFound = true;
+//
+//                                            // login request here
+//                                        }
+//                                    }
+//
+//                                    if(!isFound){
+//                                        Toast.makeText(getApplicationContext(), "You are away from your designated location.", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                } else {
+//
+//                                    Toast.makeText(getApplicationContext(), "Network Issue", Toast.LENGTH_SHORT).show();
+//                                }
+//                            } catch (JSONException e) {
+//
+//                                e.printStackTrace();
+//                            }
+//
+//                        }
+//                    },
+//                    new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                            // error
+//                            isSuccess = false;
+//                            Log.d("Error.Response", error.toString());
+//                        }
+//                    }
+//            ) {
+//                @Override
+//                protected Map<String, String> getParams() {
+//                    Map<String, String> params = new HashMap<String, String>();
+//                    return params;
+//                }
+//            };
+//            queue.add(postRequest);
         }
 
     }

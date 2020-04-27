@@ -2,6 +2,7 @@ package pk.com.ahmad.attendenceapp;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -14,6 +15,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +38,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,6 +48,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     TextView currentTime, logs, latLngtv;
+    EditText fromDate, toDate;
     Button checkInBtn, checkOutBtn;
     final Handler h = new Handler();
     String user_id = "";
@@ -60,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     private double lat = 0.0;
     private double lng = 0.0;
 
+    final Calendar myCalendar = Calendar.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,9 +77,59 @@ public class MainActivity extends AppCompatActivity {
         checkInBtn = findViewById(R.id.button2);
         checkOutBtn = findViewById(R.id.button3);
         latLngtv = findViewById(R.id.latlngtxt);
+        fromDate = findViewById(R.id.editText3);
+        toDate = findViewById(R.id.editText);
 
         Intent i = getIntent();
         user_id = i.getStringExtra("user_id");
+
+        DatePickerDialog.OnDateSetListener date1 = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                String selectedDate = year + "-" + String.valueOf(monthOfYear+1) + "-" + dayOfMonth;
+                fromDate.setText(selectedDate);
+                Toast.makeText(getApplicationContext(), year + "-" + String.valueOf(monthOfYear+1) + "-" + dayOfMonth , Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        DatePickerDialog.OnDateSetListener date2 = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                String selectedDate = year + "-" + String.valueOf(monthOfYear+1) + "-" + dayOfMonth;
+                toDate.setText(selectedDate);
+                Toast.makeText(getApplicationContext(), year + "-" + String.valueOf(monthOfYear+1) + "-" + dayOfMonth , Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        fromDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(MainActivity.this, date1, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+        toDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(MainActivity.this, date2, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
 //        user_id = "1";
 
 //        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
@@ -235,96 +292,26 @@ public class MainActivity extends AppCompatActivity {
 
     public void checkInHandler(View view) {
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-        // first check in radius or not
-        StringRequest postRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/getAllLocations",
+
+        Date d = Calendar.getInstance().getTime();
+        final String time = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+        final String currentDate = Calendar.getInstance().get(Calendar.YEAR) + "-" + String.valueOf(d.getMonth()+1) + "-" + d.getDate();
+
+        StringRequest postRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/checkIn",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // response
                         try {
-                            Boolean isFound = false;
                             JSONObject json = new JSONObject(response);
                             Log.d("Response", json.toString());
                             Log.d("Response", String.valueOf(json.getBoolean("isSuccess")));
                             if (json.getBoolean("isSuccess")) {
-                                JSONArray storeList = json.getJSONArray("payload");
-                                for (int i = 0; i < storeList.length(); i++) {
-                                    JSONObject store = (JSONObject) storeList.get(i);
-
-                                    float[] results = new float[1];
-                                    Location.distanceBetween(
-                                            lat,
-                                            lng,
-                                            Double.parseDouble(store.getString("leti")),
-                                            Double.parseDouble(store.getString("longi")),
-                                            results);
-                                    float distanceInMeters = results[0];
-                                    boolean isWithinRadius = distanceInMeters < Float.parseFloat(store.getString("radius"));
-                                    Log.d("Response", "hello check store wise----" + store.getString("store_name") + "---" + isWithinRadius);
-                                    if (isWithinRadius) {
-                                        Log.d("Response", "Now you can login");
-                                        isFound = true;
-
-
-                                        // now send request to it
-
-                                        Date d = Calendar.getInstance().getTime();
-                                        final String time = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
-                                        final String currentDate = d.getYear() + "-" + d.getMonth() + "-" + d.getDate();
-                                        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-                                        StringRequest postRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/checkIn",
-                                                new Response.Listener<String>() {
-                                                    @Override
-                                                    public void onResponse(String response) {
-                                                        // response
-                                                        try {
-                                                            JSONObject json = new JSONObject(response);
-                                                            Log.d("Response", json.toString());
-                                                            Log.d("Response", String.valueOf(json.getBoolean("isSuccess")));
-                                                            if (json.getBoolean("isSuccess")) {
-                                                                getUserStatistics();
-                                                            } else {
-                                                                Toast.makeText(getApplicationContext(), "Network Issue", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        } catch (JSONException e) {
-                                                            e.printStackTrace();
-                                                        }
-
-                                                    }
-                                                },
-                                                new Response.ErrorListener() {
-                                                    @Override
-                                                    public void onErrorResponse(VolleyError error) {
-                                                        // error
-                                                        Log.d("Error.Response", error.toString());
-                                                    }
-                                                }
-                                        ) {
-                                            @Override
-                                            protected Map<String, String> getParams() {
-                                                Map<String, String> params = new HashMap<String, String>();
-                                                params.put("user_id", user_id);
-                                                params.put("time", time);
-                                                params.put("currentDate", currentDate);
-                                                return params;
-                                            }
-                                        };
-                                        queue.add(postRequest);
-
-
-
-                                    }
-                                }
-
-                                if(!isFound){
-                                    Toast.makeText(getApplicationContext(), "You are away from your designated location.", Toast.LENGTH_SHORT).show();
-                                }
+                                getUserStatistics();
                             } else {
-
-                                Toast.makeText(getApplicationContext(), "Network Issue", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), json.getString("message"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
-
                             e.printStackTrace();
                         }
 
@@ -341,105 +328,111 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
+                params.put("user_id", user_id);
+                params.put("time", time);
+                params.put("currentDate", currentDate);
+                params.put("lat", String.valueOf(lat));
+                params.put("lng", String.valueOf(lng));
+
                 return params;
             }
         };
         queue.add(postRequest);
+
+//        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+//        // first check in radius or not
+//        StringRequest postRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/getAllLocations",
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        // response
+//                        try {
+//                            Boolean isFound = false;
+//                            JSONObject json = new JSONObject(response);
+//                            Log.d("Response", json.toString());
+//                            Log.d("Response", String.valueOf(json.getBoolean("isSuccess")));
+//                            if (json.getBoolean("isSuccess")) {
+//                                JSONArray storeList = json.getJSONArray("payload");
+//                                for (int i = 0; i < storeList.length(); i++) {
+//                                    JSONObject store = (JSONObject) storeList.get(i);
+//
+//                                    float[] results = new float[1];
+//                                    Location.distanceBetween(
+//                                            lat,
+//                                            lng,
+//                                            Double.parseDouble(store.getString("leti")),
+//                                            Double.parseDouble(store.getString("longi")),
+//                                            results);
+//                                    float distanceInMeters = results[0];
+//                                    boolean isWithinRadius = distanceInMeters < Float.parseFloat(store.getString("radius"));
+//                                    Log.d("Response", "hello check store wise----" + store.getString("store_name") + "---" + isWithinRadius);
+//                                    if (isWithinRadius) {
+//                                        Log.d("Response", "Now you can login");
+//                                        isFound = true;
+//
+//
+//                                        // now send request to it
+//
+//
+//
+//                                    }
+//                                }
+//
+//                                if(!isFound){
+//                                    Toast.makeText(getApplicationContext(), "You are away from your designated location.", Toast.LENGTH_SHORT).show();
+//                                }
+//                            } else {
+//
+//                                Toast.makeText(getApplicationContext(), "Network Issue", Toast.LENGTH_SHORT).show();
+//                            }
+//                        } catch (JSONException e) {
+//
+//                            e.printStackTrace();
+//                        }
+//
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        // error
+//                        Log.d("Error.Response", error.toString());
+//                    }
+//                }
+//        ) {
+//            @Override
+//            protected Map<String, String> getParams() {
+//                Map<String, String> params = new HashMap<String, String>();
+//                return params;
+//            }
+//        };
+//        queue.add(postRequest);
     }
 
     public void checkOutHandler(View view) {
 
+        // now send request to it
+        // ===============================================
+
+        Date d = Calendar.getInstance().getTime();
+        final String time = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+        final String currentDate = Calendar.getInstance().get(Calendar.YEAR) + "-" + String.valueOf(d.getMonth()+1) + "-" + d.getDate();
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-        // first check in radius or not
-        StringRequest postRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/getAllLocations",
+        StringRequest postRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/checkOut",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // response
                         try {
-                            Boolean isFound = false;
                             JSONObject json = new JSONObject(response);
                             Log.d("Response", json.toString());
                             Log.d("Response", String.valueOf(json.getBoolean("isSuccess")));
                             if (json.getBoolean("isSuccess")) {
-                                JSONArray storeList = json.getJSONArray("payload");
-                                for (int i = 0; i < storeList.length(); i++) {
-                                    JSONObject store = (JSONObject) storeList.get(i);
-
-                                    float[] results = new float[1];
-                                    Location.distanceBetween(
-                                            lat,
-                                            lng,
-                                            Double.parseDouble(store.getString("leti")),
-                                            Double.parseDouble(store.getString("longi")),
-                                            results);
-                                    float distanceInMeters = results[0];
-                                    boolean isWithinRadius = distanceInMeters < Float.parseFloat(store.getString("radius"));
-                                    Log.d("Response", "hello check store wise----" + store.getString("store_name") + "---" + isWithinRadius);
-                                    if (isWithinRadius) {
-                                        Log.d("Response", "Now you can login");
-                                        isFound = true;
-
-
-                                        // now send request to it
-                                        // ===============================================
-
-                                        Date d = Calendar.getInstance().getTime();
-                                        final String time = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
-                                        final String currentDate = d.getYear() + "-" + d.getMonth() + "-" + d.getDate();
-                                        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-                                        StringRequest postRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/checkOut",
-                                                new Response.Listener<String>() {
-                                                    @Override
-                                                    public void onResponse(String response) {
-                                                        // response
-                                                        try {
-                                                            JSONObject json = new JSONObject(response);
-                                                            Log.d("Response", json.toString());
-                                                            Log.d("Response", String.valueOf(json.getBoolean("isSuccess")));
-                                                            if (json.getBoolean("isSuccess")) {
-                                                                getUserStatistics();
-                                                            } else {
-                                                                Toast.makeText(getApplicationContext(), "Network Issue", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        } catch (JSONException e) {
-                                                            e.printStackTrace();
-                                                        }
-
-                                                    }
-                                                },
-                                                new Response.ErrorListener() {
-                                                    @Override
-                                                    public void onErrorResponse(VolleyError error) {
-                                                        // error
-                                                        Log.d("Error.Response", error.toString());
-                                                    }
-                                                }
-                                        ) {
-                                            @Override
-                                            protected Map<String, String> getParams() {
-                                                Map<String, String> params = new HashMap<String, String>();
-                                                params.put("user_id", user_id);
-                                                params.put("time", time);
-                                                params.put("currentDate", currentDate);
-                                                return params;
-                                            }
-                                        };
-                                        queue.add(postRequest);
-
-
-                                    }
-                                }
-
-                                if(!isFound){
-                                    Toast.makeText(getApplicationContext(), "You are away from your designated location.", Toast.LENGTH_SHORT).show();
-                                }
+                                getUserStatistics();
                             } else {
-
-                                Toast.makeText(getApplicationContext(), "Network Issue", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), json.getString("message"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
-
                             e.printStackTrace();
                         }
 
@@ -456,15 +449,93 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
+                params.put("user_id", user_id);
+                params.put("time", time);
+                params.put("currentDate", currentDate);
+                params.put("lat", String.valueOf(lat));
+                params.put("lng", String.valueOf(lng));
+
                 return params;
             }
         };
         queue.add(postRequest);
+
+
+
+
+//
+//
+//        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+//        // first check in radius or not
+//        StringRequest postRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/getAllLocations",
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        // response
+//                        try {
+//                            Boolean isFound = false;
+//                            JSONObject json = new JSONObject(response);
+//                            Log.d("Response", json.toString());
+//                            Log.d("Response", String.valueOf(json.getBoolean("isSuccess")));
+//                            if (json.getBoolean("isSuccess")) {
+//                                JSONArray storeList = json.getJSONArray("payload");
+//                                for (int i = 0; i < storeList.length(); i++) {
+//                                    JSONObject store = (JSONObject) storeList.get(i);
+//
+//                                    float[] results = new float[1];
+//                                    Location.distanceBetween(
+//                                            lat,
+//                                            lng,
+//                                            Double.parseDouble(store.getString("leti")),
+//                                            Double.parseDouble(store.getString("longi")),
+//                                            results);
+//                                    float distanceInMeters = results[0];
+//                                    boolean isWithinRadius = distanceInMeters < Float.parseFloat(store.getString("radius"));
+//                                    Log.d("Response", "hello check store wise----" + store.getString("store_name") + "---" + isWithinRadius);
+//                                    if (isWithinRadius) {
+//                                        Log.d("Response", "Now you can login");
+//                                        isFound = true;
+//
+//
+//
+//
+//                                    }
+//                                }
+//
+//                                if(!isFound){
+//                                    Toast.makeText(getApplicationContext(), "You are away from your designated location.", Toast.LENGTH_SHORT).show();
+//                                }
+//                            } else {
+//
+//                                Toast.makeText(getApplicationContext(), "Network Issue", Toast.LENGTH_SHORT).show();
+//                            }
+//                        } catch (JSONException e) {
+//
+//                            e.printStackTrace();
+//                        }
+//
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        // error
+//                        Log.d("Error.Response", error.toString());
+//                    }
+//                }
+//        ) {
+//            @Override
+//            protected Map<String, String> getParams() {
+//                Map<String, String> params = new HashMap<String, String>();
+//                return params;
+//            }
+//        };
+//        queue.add(postRequest);
     }
 
     private void getUserStatistics() {
         Date d = Calendar.getInstance().getTime();
-        final String currentDate = d.getYear() + "-" + d.getMonth() + "-" + d.getDate();
+        final String currentDate = Calendar.getInstance().get(Calendar.YEAR) + "-" + String.valueOf(d.getMonth()+1) + "-" + d.getDate();
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         StringRequest postRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/getAllDataById",
                 new Response.Listener<String>() {
@@ -490,7 +561,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 JSONArray rows = payload.getJSONArray("rows");
                                 JSONObject data = rows.getJSONObject(0);
-
+                                String result = data.getString("date") + "\n";
                                 String IN1 = data.getString("IN1");
                                 String IN2 = data.getString("IN2");
                                 String IN3 = data.getString("IN3");
@@ -506,7 +577,7 @@ public class MainActivity extends AppCompatActivity {
                                 String OUT6 = data.getString("OUT6");
 
 
-                                String result = "IN1 = " + IN1 + ", OUT1 = " + OUT1 + "\n" +
+                                result += "IN1 = " + IN1 + ", OUT1 = " + OUT1 + "\n" +
                                         "IN2 = " + IN2 + ", OUT2 = " + OUT2 + "\n" +
                                         "IN3 = " + IN3 + ", OUT3 = " + OUT3 + "\n" +
                                         "IN4 = " + IN4 + ", OUT4 = " + OUT4 + "\n" +
@@ -538,6 +609,84 @@ public class MainActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("user_id", user_id);
                 params.put("currentDate", currentDate);
+                return params;
+            }
+        };
+        queue.add(postRequest);
+    }
+
+    public void searchDateHandler(View view) {
+        final String fDate = fromDate.getText().toString();
+        final String tDate = toDate.getText().toString();
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        StringRequest postRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/getDateFilter",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            Log.d("Response", json.toString());
+                            Log.d("Response", String.valueOf(json.getBoolean("isSuccess")));
+                            if (json.getBoolean("isSuccess")) {
+                                JSONObject payload = json.getJSONObject("payload");
+
+                                JSONArray rows = payload.getJSONArray("rows");
+                                String result = "";
+                                for(int i = 0 ; i < rows.length(); i ++){
+                                    JSONObject data = rows.getJSONObject(i);
+
+                                    result += data.getString("date") + "\n";
+
+                                    String IN1 = data.getString("IN1");
+                                    String IN2 = data.getString("IN2");
+                                    String IN3 = data.getString("IN3");
+                                    String IN4 = data.getString("IN4");
+                                    String IN5 = data.getString("IN5");
+                                    String IN6 = data.getString("IN6");
+
+                                    String OUT1 = data.getString("OUT1");
+                                    String OUT2 = data.getString("OUT2");
+                                    String OUT3 = data.getString("OUT3");
+                                    String OUT4 = data.getString("OUT4");
+                                    String OUT5 = data.getString("OUT5");
+                                    String OUT6 = data.getString("OUT6");
+
+
+                                    result += "IN1 = " + IN1 + ", OUT1 = " + OUT1 + "\n" +
+                                            "IN2 = " + IN2 + ", OUT2 = " + OUT2 + "\n" +
+                                            "IN3 = " + IN3 + ", OUT3 = " + OUT3 + "\n" +
+                                            "IN4 = " + IN4 + ", OUT4 = " + OUT4 + "\n" +
+                                            "IN5 = " + IN5 + ", OUT5 = " + OUT5 + "\n" +
+                                            "IN6 = " + IN6 + ", OUT6 = " + OUT6 + "\n\n";
+                                }
+
+                                logs.setText(result);
+                            } else {
+                                Toast.makeText(getApplicationContext(), "No User Data Found", Toast.LENGTH_SHORT).show();
+                                checkInBtn.setEnabled(true);
+                                checkOutBtn.setEnabled(false);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("Error.Response", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("user_id", user_id);
+                params.put("fDate", fDate);
+                params.put("tDate", tDate);
                 return params;
             }
         };
