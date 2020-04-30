@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,10 +14,15 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,11 +53,13 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView currentTime, logs, latLngtv;
+    TextView currentTime, logs, latLngtv, storeNametv;
     EditText fromDate, toDate;
     Button checkInBtn, checkOutBtn;
+    TableLayout table;
     final Handler h = new Handler();
     String user_id = "";
+    String store_name = "";
 
     private FusedLocationProviderClient mFusedLocationClient;
     private int locationRequestCode = 1000;
@@ -79,9 +87,13 @@ public class MainActivity extends AppCompatActivity {
         latLngtv = findViewById(R.id.latlngtxt);
         fromDate = findViewById(R.id.editText3);
         toDate = findViewById(R.id.editText);
+        storeNametv = findViewById(R.id.textView5);
 
         Intent i = getIntent();
         user_id = i.getStringExtra("user_id");
+        store_name = i.getStringExtra("store_name");
+
+        storeNametv.setText(store_name);
 
         DatePickerDialog.OnDateSetListener date1 = new DatePickerDialog.OnDateSetListener() {
 
@@ -159,6 +171,176 @@ public class MainActivity extends AppCompatActivity {
         startLocationUpdates();
         CurrentTimeHandler();
         getUserStatistics();
+
+    }
+
+    public void initTable(JSONArray rows) {
+        TableLayout stk = (TableLayout) findViewById(R.id.table_main);
+        stk.removeAllViews();
+        TableRow tbrow0 = new TableRow(this);
+
+        TextView tv0 = new TextView(this);
+        tv0.setText("                                                        Date ");
+        tv0.setTextColor(Color.WHITE);
+        tbrow0.addView(tv0);
+        TextView tv1 = new TextView(this);
+        tv1.setText(" IN 1 ");
+        tv1.setTextColor(Color.WHITE);
+        tbrow0.addView(tv1);
+        TextView tv2 = new TextView(this);
+        tv2.setText(" OUT 1 ");
+        tv2.setTextColor(Color.WHITE);
+        tbrow0.addView(tv2);
+        TextView tv3 = new TextView(this);
+        tv3.setText(" IN 2 ");
+        tv3.setTextColor(Color.WHITE);
+        tbrow0.addView(tv3);
+        TextView tv4 = new TextView(this);
+        tv4.setText(" OUT 2 ");
+        tv4.setTextColor(Color.WHITE);
+        tbrow0.addView(tv4);
+
+        TextView tv5 = new TextView(this);
+        tv5.setText(" IN 3 ");
+        tv5.setTextColor(Color.WHITE);
+        tbrow0.addView(tv5);
+        TextView tv6 = new TextView(this);
+        tv6.setText(" OUT 3 ");
+        tv6.setTextColor(Color.WHITE);
+        tbrow0.addView(tv6);
+
+        TextView tv7 = new TextView(this);
+        tv7.setText(" IN 4 ");
+        tv7.setTextColor(Color.WHITE);
+        tbrow0.addView(tv7);
+        TextView tv8 = new TextView(this);
+        tv8.setText(" OUT 4 ");
+        tv8.setTextColor(Color.WHITE);
+        tbrow0.addView(tv8);
+
+        TextView tv9 = new TextView(this);
+        tv9.setText(" IN 5 ");
+        tv9.setTextColor(Color.WHITE);
+        tbrow0.addView(tv9);
+        TextView tv10 = new TextView(this);
+        tv10.setText(" OUT 5 ");
+        tv10.setTextColor(Color.WHITE);
+        tbrow0.addView(tv10);
+
+        TextView tv11 = new TextView(this);
+        tv11.setText(" IN 6 ");
+        tv11.setTextColor(Color.WHITE);
+        tbrow0.addView(tv11);
+        TextView tv12 = new TextView(this);
+        tv12.setText(" OUT 6 ");
+        tv12.setTextColor(Color.WHITE);
+        tbrow0.addView(tv12);
+
+        stk.addView(tbrow0);
+
+
+        for (int i = 0; i < rows.length(); i++) {
+            TableRow tbrow = new TableRow(this);
+            try {
+                JSONObject data = rows.getJSONObject(i);
+                String result = data.getString("date");
+                String IN1 = data.getString("IN1");
+                String IN2 = data.getString("IN2");
+                String IN3 = data.getString("IN3");
+                String IN4 = data.getString("IN4");
+                String IN5 = data.getString("IN5");
+                String IN6 = data.getString("IN6");
+
+                String OUT1 = data.getString("OUT1");
+                String OUT2 = data.getString("OUT2");
+                String OUT3 = data.getString("OUT3");
+                String OUT4 = data.getString("OUT4");
+                String OUT5 = data.getString("OUT5");
+                String OUT6 = data.getString("OUT6");
+
+
+                TextView t1v = new TextView(this);
+                t1v.setText("                                                        " + result);
+                t1v.setTextColor(Color.WHITE);
+                t1v.setGravity(Gravity.CENTER);
+                tbrow.addView(t1v);
+                TextView t2v = new TextView(this);
+                t2v.setText(IN1);
+                t2v.setTextColor(Color.WHITE);
+                t2v.setGravity(Gravity.CENTER);
+                tbrow.addView(t2v);
+                TextView t3v = new TextView(this);
+                t3v.setText(OUT1);
+                t3v.setTextColor(Color.WHITE);
+                t3v.setGravity(Gravity.CENTER);
+                tbrow.addView(t3v);
+                TextView t4v = new TextView(this);
+                t4v.setText(IN2);
+                t4v.setTextColor(Color.WHITE);
+                t4v.setGravity(Gravity.CENTER);
+                tbrow.addView(t4v);
+
+                TextView t5v = new TextView(this);
+                t5v.setText(OUT2);
+                t5v.setTextColor(Color.WHITE);
+                t5v.setGravity(Gravity.CENTER);
+                tbrow.addView(t5v);
+
+                TextView t6 = new TextView(this);
+                t6.setText(IN3);
+                t6.setTextColor(Color.WHITE);
+                t6.setGravity(Gravity.CENTER);
+                tbrow.addView(t6);
+
+                TextView t7 = new TextView(this);
+                t7.setText(OUT3);
+                t7.setTextColor(Color.WHITE);
+                t7.setGravity(Gravity.CENTER);
+                tbrow.addView(t7);
+
+                TextView t8 = new TextView(this);
+                t8.setText(IN4);
+                t8.setTextColor(Color.WHITE);
+                t8.setGravity(Gravity.CENTER);
+                tbrow.addView(t8);
+
+                TextView t9 = new TextView(this);
+                t9.setText(OUT4);
+                t9.setTextColor(Color.WHITE);
+                t9.setGravity(Gravity.CENTER);
+                tbrow.addView(t9);
+
+                TextView t10 = new TextView(this);
+                t10.setText(IN5);
+                t10.setTextColor(Color.WHITE);
+                t10.setGravity(Gravity.CENTER);
+                tbrow.addView(t10);
+
+                TextView t11 = new TextView(this);
+                t11.setText(OUT5);
+                t11.setTextColor(Color.WHITE);
+                t11.setGravity(Gravity.CENTER);
+                tbrow.addView(t11);
+
+                TextView t12 = new TextView(this);
+                t12.setText(IN6);
+                t12.setTextColor(Color.WHITE);
+                t12.setGravity(Gravity.CENTER);
+                tbrow.addView(t12);
+
+                TextView t13 = new TextView(this);
+                t13.setText(OUT6);
+                t13.setTextColor(Color.WHITE);
+                t13.setGravity(Gravity.CENTER);
+                tbrow.addView(t13);
+
+                stk.addView(tbrow);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
 
     }
 
@@ -560,6 +742,8 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
                                 JSONArray rows = payload.getJSONArray("rows");
+
+                                initTable(rows);
                                 JSONObject data = rows.getJSONObject(0);
                                 String result = data.getString("date") + "\n";
                                 String IN1 = data.getString("IN1");
@@ -632,6 +816,7 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject payload = json.getJSONObject("payload");
 
                                 JSONArray rows = payload.getJSONArray("rows");
+                                initTable(rows);
                                 String result = "";
                                 for(int i = 0 ; i < rows.length(); i ++){
                                     JSONObject data = rows.getJSONObject(i);

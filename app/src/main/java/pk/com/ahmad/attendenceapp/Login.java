@@ -219,10 +219,20 @@ public class Login extends AppCompatActivity {
                                 Log.d("Response", json.toString());
                                 Log.d("Response", String.valueOf(json.getBoolean("isSuccess")));
                                 if (json.getBoolean("isSuccess")) {
-                                    JSONArray payload = json.getJSONArray("payload");
-                                    JSONObject data = payload.getJSONObject(0);
+//                                    JSONObject rows = json.getJSONObject("pay")
+                                    JSONObject payload = json.getJSONObject("payload");
+                                    JSONArray rows = payload.getJSONArray("rows");
+                                    JSONArray doc = payload.getJSONArray("doc");
+
+
+                                    Log.d("Response", rows.toString());
+
+                                    JSONObject data = rows.getJSONObject(0);
+                                    JSONObject store = doc.getJSONObject(0);
+
                                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
                                     i.putExtra("user_id", data.get("id").toString());
+                                    i.putExtra("store_name", store.get("store_name").toString());
                                     startActivity(i);
                                 } else {
 //                                    Toast.makeText(getApplicationContext(), "Your cell# or password is incorrect", Toast.LENGTH_SHORT).show();

@@ -10,54 +10,57 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="79dp"
-        android:layout_height="34dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_width="128dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
         android:background="@color/btn"
         android:onClick="logoutHandler"
         android:text="Logout"
         android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/latlngtxt"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="34dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="54dp"
+        android:layout_marginTop="54dp"
         android:background="@color/btn"
         android:onClick="checkInHandler"
         android:text="Check In"
         android:textColor="@color/white"
-        app:layout_constraintEnd_toStartOf="@+id/button3"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+        app:layout_constraintBottom_toBottomOf="@+id/button4"
+        app:layout_constraintEnd_toEndOf="@+id/editText"
+        app:layout_constraintTop_toTopOf="@+id/textView6" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="wrap_content"
-        android:layout_height="34dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:background="@color/btn"
         android:onClick="checkOutHandler"
         android:text="Check Out"
         android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/button2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+        app:layout_constraintTop_toTopOf="@+id/button2" />
 
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="384dp"
         android:layout_height="225dp"
-        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/editText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText">
+        app:layout_constraintTop_toTopOf="@+id/editText">
 
         <TextView
             android:id="@+id/time_logs"
@@ -86,62 +89,112 @@
         android:id="@+id/latlngtxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="42dp"
         android:text="Latitude : 73.0690357 \nLongitude : 33.7159678"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/current_time_main" />
+        app:layout_constraintEnd_toStartOf="@+id/button3"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
+        android:layout_marginBottom="44dp"
+        android:layout_marginEnd="104dp"
+        android:layout_marginRight="104dp"
+        android:layout_marginTop="32dp"
         android:text="Attendence App"
         android:textSize="30sp"
         android:textStyle="bold"
         android:visibility="gone"
-        tools:layout_editor_absoluteX="192dp"
-        tools:layout_editor_absoluteY="32dp" />
+        app:layout_constraintBottom_toBottomOf="@+id/latlngtxt"
+        app:layout_constraintEnd_toStartOf="@+id/button"
+        app:layout_constraintStart_toEndOf="@+id/current_time_main"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editText3"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="131dp"
         android:ems="10"
         android:inputType="date"
-        app:layout_constraintEnd_toStartOf="@+id/editText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/latlngtxt" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="120dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginStart="13dp"
         android:ems="10"
         android:inputType="date"
         app:layout_constraintEnd_toStartOf="@+id/button4"
-        app:layout_constraintTop_toBottomOf="@+id/latlngtxt" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/latlngtxt"
+        app:layout_constraintTop_toTopOf="@+id/editText3" />
 
     <Button
         android:id="@+id/button4"
         android:layout_width="wrap_content"
-        android:layout_height="34dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="3dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="3dp"
         android:background="@color/btn"
         android:onClick="searchDateHandler"
         android:text="Search"
         android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/editText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/latlngtxt" />
+        app:layout_constraintTop_toTopOf="@+id/editText" />
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="7dp"
+        android:background="#3d455b"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button4">
+
+        <HorizontalScrollView
+            android:id="@+id/hscrll1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/RelativeLayout1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <TableLayout
+                    android:id="@+id/table_main"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"></TableLayout>
+            </RelativeLayout>
+        </HorizontalScrollView>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="7dp"
+        android:text="Store Name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/current_time_main" />
 </android.support.constraint.ConstraintLayout>
