@@ -35,12 +35,52 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="ffffff" />
-                                      <entry key="foregroundImage" value="C:\Users\User\Downloads\WhatsApp Image 2020-04-30 at 5.24.27 PM.jpeg" />
+                                      <entry key="backgroundLayerName" value="ic_attend_background" />
+                                      <entry key="foregroundImage" value="D:\Programs\AndroidStudio\projectAndroid\AttendenceApp\app\src\main\res\mipmap-hdpi\ic_attendence.png" />
+                                      <entry key="foregroundLayerName" value="ic_attend_foreground" />
+                                      <entry key="outputName" value="ic_attend_location" />
                                     </map>
                                   </option>
                                 </PersistentState>
                               </value>
                             </entry>
+                          </map>
+                        </option>
+                      </PersistentState>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </PersistentState>
+          </value>
+        </entry>
+        <entry key="vectorWizard">
+          <value>
+            <PersistentState>
+              <option name="children">
+                <map>
+                  <entry key="vectorAssetStep">
+                    <value>
+                      <PersistentState>
+                        <option name="children">
+                          <map>
+                            <entry key="clipartAsset">
+                              <value>
+                                <PersistentState>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="url" value="jar:file:/D:/Programs/android/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_history_black_24dp.xml" />
+                                    </map>
+                                  </option>
+                                </PersistentState>
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                        <option name="values">
+                          <map>
+                            <entry key="outputName" value="ic_history_black_24dp" />
+                            <entry key="sourceFile" value="C:\Users\User" />
                           </map>
                         </option>
                       </PersistentState>
