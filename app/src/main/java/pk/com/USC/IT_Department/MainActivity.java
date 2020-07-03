@@ -178,6 +178,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         lng = location.getLongitude();
 
         latLngtv.setText("Latitude : " + lat + "\nLongitutde : " + lng);
+        LatLng sydney = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Current Location"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12.0f));
 //        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         // You can now create a LatLng Object for use with maps
 //        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -196,6 +200,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 if (location != null) {
                     wayLatitude = location.getLatitude();
                     wayLongitude = location.getLongitude();
+                    LatLng sydney = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(sydney).title("Current Location"));
+//                    mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12.0f));
                     latLngtv.setText("Latitude : "+String.valueOf(wayLatitude) + " \nLongitude : " + String.valueOf(wayLongitude));
                 }
             });
@@ -595,8 +603,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        Log.d("lat", String.valueOf(lat));
+        Log.d("lng", String.valueOf(lng));
     }
 }
