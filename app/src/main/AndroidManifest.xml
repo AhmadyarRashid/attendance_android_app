@@ -11,10 +11,10 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_icon"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_icon"
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
@@ -27,7 +27,8 @@
             android:name="pk.com.USC.IT_Department.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
+            >
+        </activity>
         <activity
             android:name="pk.com.USC.IT_Department.Login"
             android:screenOrientation="portrait"
@@ -45,16 +46,17 @@
         <activity
             android:name="pk.com.USC.IT_Department.Dashboard"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+        <activity android:name="pk.com.USC.IT_Department.GridItem.dasboard_item" />
+        <activity android:name="pk.com.USC.IT_Department.Reports"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="pk.com.USC.IT_Department.GridItem.dasboard_item" />
-        <activity android:name="pk.com.USC.IT_Department.Reports"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            ></activity>
     </application>
 
 </manifest>
