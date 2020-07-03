@@ -8,10 +8,10 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -33,6 +35,12 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +51,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
     TextView currentTime, logs, latLngtv, storeNametv;
     Button checkInBtn, checkOutBtn;
@@ -64,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
     private double lat = 0.0;
     private double lng = 0.0;
 
+    private GoogleMap mMap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +91,11 @@ public class MainActivity extends AppCompatActivity {
         store_name = i.getStringExtra("store_name");
 
         storeNametv.setText(store_name);
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
 //        user_id = "1";
 
@@ -573,5 +588,15 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         queue.add(postRequest);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }

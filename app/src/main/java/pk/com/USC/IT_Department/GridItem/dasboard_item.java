@@ -1,6 +1,6 @@
 package pk.com.USC.IT_Department.GridItem;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import pk.com.USC.IT_Department.R;
