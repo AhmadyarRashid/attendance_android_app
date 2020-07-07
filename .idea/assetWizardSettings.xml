@@ -61,8 +61,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="foregroundImage" value="$PROJECT_DIR$/../WhatsApp Image 2020-06-29 at 6.38.48 PM.jpeg" />
-                                      <entry key="outputName" value="ic_icon" />
+                                      <entry key="foregroundImage" value="$PROJECT_DIR$/../setting.jpeg" />
+                                      <entry key="outputName" value="ic_setting" />
                                     </map>
                                   </option>
                                 </PersistentState>

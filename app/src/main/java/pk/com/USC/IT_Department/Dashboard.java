@@ -91,6 +91,11 @@ public class Dashboard extends AppCompatActivity {
 //                    SmsManager smsManager = SmsManager.getDefault();
 //                    smsManager.sendTextMessage(null, null, "hello world", null, null);
 //                    Toast.makeText(getApplicationContext(), "Share Location\n" + lat + "\n" + lng , Toast.LENGTH_SHORT).show();
+                }else if(position == 3){
+                    Intent changePassword = new Intent(getApplicationContext(), ChangePassword.class);
+                    changePassword.putExtra("user_id", i.getStringExtra("user_id"));
+                    changePassword.putExtra("store_name", i.getStringExtra("store_name"));
+                    startActivity(changePassword);
                 }else {
                     Toast.makeText(getApplicationContext(), "Never happen", Toast.LENGTH_SHORT).show();
                 }

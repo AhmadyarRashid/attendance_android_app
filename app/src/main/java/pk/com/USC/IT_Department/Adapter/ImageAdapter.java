@@ -79,12 +79,14 @@ public class ImageAdapter extends BaseAdapter {
     public Integer[] mThumbIds = {
             R.mipmap.ic_attend_location,
             R.mipmap.ic_reports,
-            R.mipmap.ic_curr_location
+            R.mipmap.ic_curr_location,
+            R.mipmap.ic_setting
     };
     public String[] titles = {
             "Attendence",
             "Reports",
-            "Share Location"
+            "Share Location",
+            "Change Password"
     };
 
 }

@@ -18,24 +18,24 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".ChangePassword"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/map_key"/>
+            android:value="@string/map_key" />
 
         <activity
-            android:name="pk.com.USC.IT_Department.MainActivity"
+            android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            >
-        </activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity
-            android:name="pk.com.USC.IT_Department.Login"
+            android:name=".Login"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity
-            android:name="pk.com.USC.IT_Department.SignUp"
+            android:name=".SignUp"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
@@ -44,19 +44,18 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name="pk.com.USC.IT_Department.Dashboard"
+            android:name=".Dashboard"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        </activity>
-        <activity android:name="pk.com.USC.IT_Department.GridItem.dasboard_item" />
-        <activity android:name="pk.com.USC.IT_Department.Reports"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".GridItem.dasboard_item" />
+        <activity
+            android:name=".Reports"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>
