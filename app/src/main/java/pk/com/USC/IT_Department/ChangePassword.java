@@ -43,7 +43,7 @@ public class ChangePassword extends AppCompatActivity {
         if (!newPassword.getText().toString().equals(confirrmPassword.getText().toString())) {
             Toast.makeText(getApplicationContext(), "New Password Field Mistach", Toast.LENGTH_SHORT).show();
         } else {
-            StringRequest loginRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/login",
+            StringRequest loginRequest = new StringRequest(Request.Method.POST, getString(R.string.ip_address) + "/api/users/changePassword",
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -52,6 +52,8 @@ public class ChangePassword extends AppCompatActivity {
                                 Log.d("Response", json.toString());
                                 Log.d("Response", String.valueOf(json.getBoolean("isSuccess")));
                                 if (json.getBoolean("isSuccess")) {
+                                    confirrmPassword.setText("");
+                                    newPassword.setText("");
                                     Toast.makeText(getApplicationContext(), "Password change successfully", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(getApplicationContext(), json.getString("message"), Toast.LENGTH_SHORT).show();
